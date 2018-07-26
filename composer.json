@@ -1,0 +1,15 @@
+{
+    "name": "stigwue/happrox",
+    "description": "Human approximation for numbers and durations.",
+    "keywords": [
+        "human",
+        "approximation",
+        "number",
+        "time",
+        "date"
+    ],
+    "license": "MIT",
+    "autoload": {
+        "files": ["happrox.php"]
+    }
+}
