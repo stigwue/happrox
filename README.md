@@ -21,11 +21,14 @@ Note that, when supplied durations become greater than the set maximum approxima
 ```php
 $ha_instance = new Happrox();
 
-//1 decimal place (d.p) is the default, you can set to 2 for approximations like 99.99k
+//1 decimal place (d.p) is the default (99.9k). You can set to 2 for approximations like 99.99k
 Happrox::setDecimalPlace($ha_instance, 1);
 
-//datetime format strings are PHP's and the default is Jul 26, 2018 9:18 am
-Happrox::setDatetimeFormat($ha_instance, 'M j, Y g:i a');
+//2 significant durations is the default (e.g 1hr 36m). You can set to 3 for approximations like 1d 23hr 23m
+Happrox::setSignificantDurations($ha_instance, 2);
+
+//datetime format strings are PHP's and the default is Jul 26, 2018 9:18am
+Happrox::setDatetimeFormat($ha_instance, 'M j, Y g:ia');
 
 //maximum approximated datetime is 6 days (518,400s), anything more will not be approximated
 Happrox::setDatetimeMaximum($ha_instance, 518400);
@@ -43,13 +46,9 @@ $happrox_duration = Happrox::duration($ha_instance, $value);
 numbers
 
 1 - 999 : as is
-1,000 - 999,999: 1k - 999.9k
+1,000 - 999,999: 1k - 999.9k  (how about a 0.9M?)
 1,000,000 - 999,999,999: 1M - 999.9M
 1,000,000,000 - 999,999,999,999 : 1B - 999.9B
-*/
-
-
-/*
 duration
 
 1s - 59s : as is
@@ -68,8 +67,6 @@ format date and time
 ```
 
 ## To Do
-
-* Something akin to decimal places for duration.
 
 * Handle Indian style number approximations (lakh)?
 
