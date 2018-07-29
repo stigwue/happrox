@@ -19,51 +19,58 @@ Also, to approximate numbers, just supply the _value_. For durations, the number
 Note that, when supplied durations become greater than the set maximum approximation duration, the supplied duration will be treated as a UNIX timestamp and formatted accordingly. If this is not the case for you, _Happrox::setDurationBase()_ should be set with an appropriate duration to correct the datetime (the default value is 0).
 
 ```php
-$ha_instance = new Happrox();
+require_once(__DIR__ . '/happrox.php');
 
-//1 decimal place (d.p) is the default (99.9k). You can set to 2 for approximations like 99.99k
-Happrox::setDecimalPlace($ha_instance, 1);
+//set time zone, no where like home
+date_default_timezone_set('Africa/Lagos');
 
-//2 significant durations is the default (e.g 1hr 36m). You can set to 3 for approximations like 1d 23hr 23m
-Happrox::setSignificantDurations($ha_instance, 2);
+$obj = new Happrox();
 
-//datetime format strings are PHP's and the default is Jul 26, 2018 9:18am
-Happrox::setDatetimeFormat($ha_instance, 'M j, Y g:ia');
+echo "Numbers\n";
 
-//maximum approximated datetime is 6 days (518,400s), anything more will not be approximated
-Happrox::setDatetimeMaximum($ha_instance, 518400);
+$happrox = Happrox::number($obj, 10);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+$happrox = Happrox::number($obj, 1010);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+$happrox = Happrox::number($obj, 123456);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+$happrox = Happrox::number($obj, 1010101);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+$happrox = Happrox::number($obj, 12345678);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+$happrox = Happrox::number($obj, 101010101010);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
 
-//base for direct datetime formatting
-Happrox::setDurationBase($ha_instance, 0);
+Happrox::setDurationBase($obj, time(NULL));
 
-$value = 12345;
+echo "Durations\n";
 
-$happrox_number = Happrox::number($ha_instance, $value);
+$happrox = Happrox::duration($obj, 36);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+$happrox = Happrox::duration($obj, 3599);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+$happrox = Happrox::duration($obj, 518400);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+$happrox = Happrox::duration($obj, 604799);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+$happrox = Happrox::duration($obj, 123456);
+echo $happrox['value'] . ' -> ' . $happrox['happrox'] . "\n";
+```
 
-$happrox_duration = Happrox::duration($ha_instance, $value);
-
-/*
-numbers
-
-1 - 999 : as is
-1,000 - 999,999: 1k - 999.9k  (how about a 0.9M?)
-1,000,000 - 999,999,999: 1M - 999.9M
-1,000,000,000 - 999,999,999,999 : 1B - 999.9B
-duration
-
-1s - 59s : as is
-60s - 3,599s : 1m - 58m 59s
-3,600s - 86,399s : 1hr - 23hrs 58m 59s
-86400s - 604,799ds : 1d - 6d----
-
-wks
-mnths
-yr
-
-> maximum
-format date and time
-*/
-
+```
+Numbers
+10 -> 10
+1010 -> 1.0k
+123456 -> 123.5k
+1010101 -> 1.0M
+12345678 -> 12.3M
+101010101010 -> 101.0B
+Durations
+36 -> 36s
+3599 -> 59m 59s
+518400 -> 6d
+604799 -> Jul 22, 2018 7:32am
+123456 -> 1d 10hr
 ```
 
 ## To Do

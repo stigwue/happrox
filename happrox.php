@@ -48,15 +48,50 @@ class Happrox
         return $instance->_decimalplace;
     }
 
+    /**
+    * Set significant durations of a Happrox instance.
+    *
+    *
+    * @param instance Happrox instance
+    * @param value Number of significant durations
+    * @return Instance's significant durations
+    * @throw
+    */
     public static function setSignificantDurations($instance, $value)
     {
         $instance->_significant_durations = $value;
         return $instance->_significant_durations;
     }
 
-    //format
+    /**
+    * Set datetime format string of a Happrox instance.
+    *
+    *
+    * @param instance Happrox instance
+    * @param value Format string
+    * @return Instance's datetime format string
+    * @throw
+    */
+    public static function setDatetimeFormat($instance, $value)
+    {
+        $instance->_datetime_format = $value;
+        return $instance->_datetime_format;
+    }
 
-    //max
+    /**
+    * Set datetime maximum for approximation.
+    *
+    *
+    * @param instance Happrox instance
+    * @param value Maximum
+    * @return Instance's datetime maximum
+    * @throw
+    */
+    public static function setDatetimeMaximum($instance, $value)
+    {
+        $instance->_datetime_max = $value;
+        return $instance->_datetime_max;
+    }
 
     public static function setDurationBase($instance, $value)
     {
@@ -102,7 +137,7 @@ class Happrox
             else if ($value >= 1000000000 AND $value < 1000000000000)
             {
                 $mux = 1000000000;
-                $unit = 'b';
+                $unit = 'B';
             }
 
             $approx = $value / $mux;
