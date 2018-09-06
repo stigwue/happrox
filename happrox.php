@@ -48,6 +48,11 @@ class Happrox
         return $instance->_decimalplace;
     }
 
+    public static function getDecimalPlace($instance)
+    {
+        return $instance->_decimalplace;
+    }
+
     /**
     * Set significant durations of a Happrox instance.
     *
@@ -60,6 +65,11 @@ class Happrox
     public static function setSignificantDurations($instance, $value)
     {
         $instance->_significant_durations = $value;
+        return $instance->_significant_durations;
+    }
+
+    public static function getSignificantDurations($instance)
+    {
         return $instance->_significant_durations;
     }
 
@@ -78,6 +88,11 @@ class Happrox
         return $instance->_datetime_format;
     }
 
+    public static function getDatetimeFormat($instance, $value)
+    {
+        return $instance->_datetime_format;
+    }
+
     /**
     * Set datetime maximum for approximation.
     *
@@ -93,11 +108,34 @@ class Happrox
         return $instance->_datetime_max;
     }
 
+    public static function getDatetimeMaximum($instance, $value)
+    {
+        return $instance->_datetime_max;
+    }
+
+    /**
+    * Set datetime base for duration.
+    *
+    *
+    * @param instance Happrox instance
+    * @param value Duration base
+    * @return Instance's datetime duration base
+    * @throw
+    */
     public static function setDurationBase($instance, $value)
     {
         $instance->_duration_base = $value;
         return $instance->_duration_base;
     }
+
+    public static function getDurationBase($instance, $value)
+    {
+        return $instance->_duration_base;
+    }
+
+
+
+
 
     /**
     * Approximate a number.
@@ -117,7 +155,8 @@ class Happrox
         {
             return [
                 'happrox' => number_format($value),
-                'value' => $value
+                'value' => $value,
+                'same' => true
             ];
         }
         else
@@ -139,12 +178,20 @@ class Happrox
                 $mux = 1000000000;
                 $unit = 'B';
             }
+            else
+            {
+                return [
+                    'happrox' => number_format($value),
+                    'value' => $value,
+                    'same' => true
+                ];
+            }
 
             $approx = $value / $mux;
-
             return [
                 'happrox' => number_format(($positive ? +1 : -1) * $approx, $instance->_decimalplace) . $unit,
-                'value' => $value
+                'value' => $value,
+                'same' => false
             ];
         }
     }
@@ -160,13 +207,36 @@ class Happrox
     */
     public static function duration($instance, $value)
     {
-        if ($value > $instance->_datetime_max)
+        if ($value == 0)
+        {
+            //date will have returned false
+            return [
+                'happrox' => 'Now',
+                'value' => $value,
+                'ago' => false
+            ];
+        }
+        else if ($value > $instance->_datetime_max)
         {
             $rebased = $instance->_duration_base - $value;
-            return [
-                'happrox' => date($instance->_datetime_format, $rebased),
-                'value' => $value
-            ];
+            $formatted = date($instance->_datetime_format, $rebased);
+            if ($value > PHP_INT_MAX)
+            {
+                return [
+                    'happrox' => 'Future',
+                    'value' => $value,
+                    'ago' => false
+                ];
+            }
+            else
+            {
+                //date will return false
+                return [
+                    'happrox' => date($instance->_datetime_format, $rebased),
+                    'value' => $value,
+                    'ago' => false
+                ];
+            }
         }
         else
         {
@@ -239,7 +309,8 @@ class Happrox
 
             return [
                 'happrox' => substr($approx, 0, strlen($approx)-1),
-                'value' => $value
+                'value' => $value,
+                'ago' => true
             ];
         }
     }
